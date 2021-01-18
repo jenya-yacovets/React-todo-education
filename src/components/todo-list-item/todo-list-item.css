@@ -1,0 +1,10 @@
+.float-right {
+    float: right;
+    margin: 0 2px
+}
+.itemTodo {
+    cursor: 'pointer';
+}
+.itemTodo.important {
+    color: green;
+}
