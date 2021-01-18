@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { AlertIcon } from '@primer/octicons-react'
+import { AlertIcon, DiffRemovedIcon } from '@primer/octicons-react'
 
 import './todo-list-item.css'
 
@@ -24,39 +24,23 @@ export default class TodoListItem extends Component {
     }
 
     onLabelClick = () => {
-
-        const { done } = this.state
-        let newDone
-
-        if (done) {
-            newDone = false
-        } else {
-            newDone = true
-        }
-
-        this.setState({
-            done: newDone
+        this.setState(({ done }) => {
+            return {
+                done: !done
+            }
         })
     }
 
     onMarkImportant = () => {
-
-        const { status } = this.state
-        let newStatus
-
-        if (status === 2) {
-            newStatus = 1
-        } else {
-            newStatus = 2
-        }
-
-        this.setState({
-            status: newStatus
+        this.setState(({ status }) => {
+            return {
+                status: status === 1 ? 2 : 1
+            }
         })
     }
 
     render() {
-        const { label } = this.props
+        const { label, onDeleted } = this.props
         const { done, status } = this.state
 
         const style = {
@@ -80,6 +64,12 @@ export default class TodoListItem extends Component {
                 className="btn btn-outline-success btn-sm float-right"
                 onClick={this.onMarkImportant} >
                     <AlertIcon aria-label="Отметить как важное" />
+                </button>
+
+                <button 
+                className="btn btn-outline-danger btn-sm float-right"
+                onClick={onDeleted} >
+                    <DiffRemovedIcon aria-label="Удалить" />
                 </button>
             </span>
         )
