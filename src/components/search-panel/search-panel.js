@@ -1,13 +1,26 @@
-import React from 'react'
+import React, { Component } from 'react'
 
-const SearchPanel = () => {
+export default class SearchPanel extends Component {
 
-    return (
-        <div className="d-flex">
-            <input className="form-control me-2" type="search" placeholder="Поиск по задачам"/>
-            <button className="btn btn-warning" type="button">Искать</button>
-        </div>
-    )
+    state = {
+        term: ''
+    }
+
+    onSearch = (e) => {
+        this.setState({ 
+            term: e.target.value 
+        })
+        this.props.onSearch(e.target.value)
+    }
+
+    render() {
+        return (
+            <div className="d-flex">
+                <input className="form-control me-2"
+                onChange={ this.onSearch }
+                value={ this.state.term }
+                type="search" placeholder="Поиск по задачам" />
+            </div>
+        )
+    }
 }
-
-export default SearchPanel
