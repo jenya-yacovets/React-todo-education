@@ -15,7 +15,9 @@ export default class App extends Component {
             this.createTodoItem('Выпить кофе'),
             this.createTodoItem('Поработать'),
             this.createTodoItem('Покурить кальян')
-        ]
+        ],
+        term: '',
+        filter: 'all'
     }
 
     createTodoItem (name) {
@@ -97,33 +99,81 @@ export default class App extends Component {
         })
     }
 
+    search = (items, term) => {
+        if (term.length <= 0) {
+            return items
+        }
+
+        return items.filter((item) => {
+            return item.label.toLowerCase().indexOf(term.toLowerCase()) > -1
+        })
+    }
+
+    filter = (items, filter) => {
+        
+        switch (filter) {
+            case 'all':
+                return items
+            case 'active':
+                return items.filter(item => !item.done)
+            case 'done':
+                return items.filter(item => item.done)
+            default:
+                return items
+        }
+    }
+
+    onSearch = (term) => {
+        this.setState(() => {
+            return {
+                term
+            }
+        })
+    }
+
+    onFilterChange = (filter) => {
+        this.setState(() => {
+            return {
+                filter
+            }
+        })
+    }
+
     render() {
 
-        const doneCount = this.state.todoData.filter(el => el.done).length
-        const todoCount = this.state.todoData.length - doneCount
+        const { term, todoData, filter } = this.state
+
+        const visibleItems = this.filter(this.search(todoData, term), filter)
+        const doneCount = todoData.filter(el => el.done).length
+        const todoCount = todoData.length - doneCount
 
         return (
             <div className="container">
-                <Header todo={todoCount} todoDone={doneCount} />
+                <Header todo={ todoCount } todoDone={ doneCount } />
                 <div className="row">
                     <div className="col-7">
-                        <Filter />
+                        <Filter
+                        filter={ filter }
+                        onFilterChange={ this.onFilterChange }
+                        />
                     </div>
                     <div className="col-5">
-                        <SearchPanel />
+                        <SearchPanel
+                        onSearch={ this.onSearch }
+                         />
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-12">
                         <TodoCreate 
-                        onCreate={this.createItem} />
+                        onCreate={ this.createItem } />
                     </div>
                 </div>
                 <TodoList
-                    todos={this.state.todoData}
-                    onDeleted={this.deleteItem}
-                    onToggleStatus={this.onToggleStatus}
-                    onToggleDone={this.onToggleDone}
+                    todos={ visibleItems }
+                    onDeleted={ this.deleteItem }
+                    onToggleStatus={ this.onToggleStatus }
+                    onToggleDone={ this.onToggleDone }
                     />
             </div>
         )
